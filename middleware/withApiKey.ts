@@ -4,6 +4,11 @@ import { buildClient } from '@/lib/anthropic'
 import type Anthropic from '@anthropic-ai/sdk'
 
 export async function withApiKey(userId: string): Promise<Anthropic> {
+  const apiKey = await getRawApiKey(userId)
+  return buildClient(apiKey)
+}
+
+export async function getRawApiKey(userId: string): Promise<string> {
   const supabase = createClient()
   const { data, error } = await supabase
     .from('user_settings')
@@ -15,6 +20,5 @@ export async function withApiKey(userId: string): Promise<Anthropic> {
     throw new Error('NO_API_KEY')
   }
 
-  const apiKey = decrypt(data.encrypted_api_key)
-  return buildClient(apiKey)
+  return decrypt(data.encrypted_api_key)
 }
