@@ -104,7 +104,6 @@ export function NudgeGenerator() {
             }
             return (
               <div key={email.tone} className="rounded-lg border border-gray-200 bg-white overflow-hidden">
-                <div className={`h-1 w-full ${meta.bar}`} />
                 <div className="px-4 pt-3 pb-1 flex items-start justify-between gap-4">
                   <div>
                     <span className={`inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold ${meta.badge}`}>
