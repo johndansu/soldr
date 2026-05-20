@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { useCompletion } from '@ai-sdk/react'
 import ReactMarkdown from 'react-markdown'
+import remarkGfm from 'remark-gfm'
 
 export function ProposalDrafter() {
   const [brief, setBrief] = useState('')
@@ -10,6 +11,7 @@ export function ProposalDrafter() {
 
   const { completion, complete, isLoading, error } = useCompletion({
     api: '/api/ai/proposal',
+    streamProtocol: 'text',
   })
 
   async function handleSubmit(e: React.FormEvent) {
@@ -53,15 +55,17 @@ export function ProposalDrafter() {
 
         <div className="min-h-64 rounded-lg border border-gray-200 bg-white p-6">
           {completion ? (
-            <div className="prose prose-sm max-w-none">
-              <ReactMarkdown>{completion}</ReactMarkdown>
+            <div className="prose prose-sm max-w-none prose-headings:font-semibold prose-table:text-sm prose-td:py-2 prose-th:py-2">
+              <ReactMarkdown remarkPlugins={[remarkGfm]}>{completion}</ReactMarkdown>
             </div>
           ) : isLoading ? (
             <div className="flex items-center gap-2 text-sm text-gray-400">
               <span className="inline-block h-1.5 w-1.5 animate-pulse rounded-full bg-gray-400" />
               Generating...
             </div>
-          ) : null}
+          ) : (
+            <p className="text-sm text-gray-400">No output received. Check server logs.</p>
+          )}
         </div>
 
         {error && (

@@ -22,7 +22,8 @@ export default function LoginPage() {
       if (mode === 'signup') {
         const { error } = await supabase.auth.signUp({ email, password })
         if (error) throw error
-        setError('Check your email to confirm your account.')
+        router.push('/dashboard')
+        router.refresh()
       } else {
         const { error } = await supabase.auth.signInWithPassword({ email, password })
         if (error) throw error
@@ -91,6 +92,7 @@ export default function LoginPage() {
         <p className="mt-4 text-center text-sm text-gray-500">
           {mode === 'signin' ? "Don't have an account?" : 'Already have an account?'}{' '}
           <button
+            type="button"
             onClick={() => setMode(mode === 'signin' ? 'signup' : 'signin')}
             className="font-medium text-gray-900 hover:underline"
           >
