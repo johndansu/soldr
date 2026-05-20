@@ -23,6 +23,7 @@ export default async function DashboardLayout({
           <nav className="flex-1 space-y-1 px-2 py-2">
             <NavLink href="/dashboard">Dashboard</NavLink>
             <NavLink href="/dashboard/proposals">Proposals</NavLink>
+            <NavLink href="/dashboard/nudge">Payment Nudge</NavLink>
             <NavLink href="/dashboard/clients">Clients</NavLink>
             <NavLink href="/dashboard/invoices">Invoices</NavLink>
           </nav>
