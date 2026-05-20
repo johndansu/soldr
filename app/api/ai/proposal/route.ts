@@ -4,8 +4,10 @@ import { createClient } from '@/lib/supabase/server'
 import { getRawApiKey } from '@/middleware/withApiKey'
 import { isOpenRouter, OPENROUTER_FREE_MODELS } from '@/lib/ai'
 
+// Streaming only — saving is handled explicitly via POST /api/proposals
+
 export async function POST(req: NextRequest) {
-  const { prompt: brief, clientId, projectId } = await req.json()
+  const { prompt: brief } = await req.json()
 
   if (!brief) {
     return Response.json({ error: { code: 'BAD_REQUEST' } }, { status: 400 })
@@ -19,7 +21,7 @@ export async function POST(req: NextRequest) {
   }
 
   if (isOpenRouter) {
-    return streamFromOpenRouter(brief, clientId, projectId, user.id, supabase)
+    return streamFromOpenRouter(brief)
   }
 
   // Anthropic BYOK path
@@ -30,16 +32,10 @@ export async function POST(req: NextRequest) {
     return Response.json({ error: { code: 'NO_API_KEY' } }, { status: 422 })
   }
 
-  return streamFromAnthropic(brief, clientId, projectId, user.id, userApiKey, supabase)
+  return streamFromAnthropic(brief, userApiKey)
 }
 
-async function streamFromOpenRouter(
-  brief: string,
-  clientId: string | null,
-  projectId: string | null,
-  userId: string,
-  supabase: ReturnType<typeof import('@/lib/supabase/server').createClient>
-) {
+async function streamFromOpenRouter(brief: string) {
   for (const model of OPENROUTER_FREE_MODELS) {
     const upstream = await fetch('https://openrouter.ai/api/v1/chat/completions', {
       method: 'POST',
@@ -97,20 +93,6 @@ async function streamFromOpenRouter(
           }
         }
 
-        // Save to DB after stream ends
-        try {
-          await supabase.from('proposals').insert({
-            user_id: userId,
-            client_id: clientId ?? null,
-            project_id: projectId ?? null,
-            brief_input: brief,
-            content: fullText,
-            prompt_version: 'v1',
-          })
-        } catch (e) {
-          console.error('[proposal] DB save failed:', e)
-        }
-
         controller.close()
       },
     })
@@ -127,14 +109,7 @@ async function streamFromOpenRouter(
   return Response.json({ error: { code: 'ALL_MODELS_BUSY' } }, { status: 503 })
 }
 
-async function streamFromAnthropic(
-  brief: string,
-  clientId: string | null,
-  projectId: string | null,
-  userId: string,
-  apiKey: string,
-  supabase: ReturnType<typeof import('@/lib/supabase/server').createClient>
-) {
+async function streamFromAnthropic(brief: string, apiKey: string) {
   const { streamText } = await import('ai')
   const { getModel } = await import('@/lib/ai')
 
@@ -142,20 +117,6 @@ async function streamFromAnthropic(
     model: getModel(apiKey),
     system: PROPOSAL_SYSTEM_PROMPT,
     prompt: brief,
-    onFinish: async ({ text }) => {
-      try {
-        await supabase.from('proposals').insert({
-          user_id: userId,
-          client_id: clientId ?? null,
-          project_id: projectId ?? null,
-          brief_input: brief,
-          content: text,
-          prompt_version: 'v1',
-        })
-      } catch (e) {
-        console.error('[proposal] DB save failed:', e)
-      }
-    },
   })
 
   return result.toTextStreamResponse()
