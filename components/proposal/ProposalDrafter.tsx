@@ -4,29 +4,37 @@ import { useState } from 'react'
 import { useCompletion } from '@ai-sdk/react'
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
+import { BriefClarifier } from './BriefClarifier'
+
+type Step = 'input' | 'clarify' | 'generating' | 'done'
 
 export function ProposalDrafter() {
   const [brief, setBrief] = useState('')
-  const [submitted, setSubmitted] = useState(false)
+  const [step, setStep] = useState<Step>('input')
 
   const { completion, complete, isLoading, error } = useCompletion({
     api: '/api/ai/proposal',
     streamProtocol: 'text',
   })
 
-  async function handleSubmit(e: React.FormEvent) {
+  async function startGeneration(enrichedBrief: string) {
+    setStep('generating')
+    await complete(enrichedBrief)
+    setStep('done')
+  }
+
+  function handleBriefSubmit(e: React.FormEvent) {
     e.preventDefault()
     if (!brief.trim()) return
-    setSubmitted(true)
-    await complete(brief)
+    setStep('clarify')
   }
 
   function handleReset() {
     setBrief('')
-    setSubmitted(false)
+    setStep('input')
   }
 
-  if (submitted) {
+  if (step === 'generating' || step === 'done') {
     return (
       <div className="space-y-4">
         <div className="flex items-center justify-between">
@@ -79,8 +87,26 @@ export function ProposalDrafter() {
     )
   }
 
+  if (step === 'clarify') {
+    return (
+      <div className="space-y-4">
+        <div>
+          <h2 className="text-lg font-semibold text-gray-900">Sharpen the brief</h2>
+          <p className="mt-0.5 text-sm text-gray-500">
+            A few answers make for a much sharper proposal.
+          </p>
+        </div>
+        <BriefClarifier
+          brief={brief}
+          onEnrichment={(enriched) => startGeneration(enriched)}
+          onSkip={() => startGeneration(brief)}
+        />
+      </div>
+    )
+  }
+
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
+    <form onSubmit={handleBriefSubmit} className="space-y-4">
       <div>
         <label htmlFor="brief" className="block text-sm font-medium text-gray-700">
           Client brief
@@ -100,10 +126,10 @@ export function ProposalDrafter() {
 
       <button
         type="submit"
-        disabled={!brief.trim() || isLoading}
+        disabled={!brief.trim()}
         className="rounded-md bg-gray-900 px-4 py-2 text-sm font-medium text-white hover:bg-gray-700 disabled:opacity-50"
       >
-        Generate proposal
+        Continue
       </button>
     </form>
   )
