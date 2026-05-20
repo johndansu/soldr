@@ -1,8 +1,8 @@
 'use client'
 
-import { useState, useRef } from 'react'
+import { useState } from 'react'
 import { useCompletion } from '@ai-sdk/react'
-import { useRouter } from 'next/navigation'
+import Link from 'next/link'
 import { BriefClarifier } from './BriefClarifier'
 import { ProposalMarkdown } from './ProposalMarkdown'
 
@@ -12,17 +12,30 @@ export function ProposalDrafter() {
   const [brief, setBrief] = useState('')
   const [enrichedBrief, setEnrichedBrief] = useState('')
   const [step, setStep] = useState<Step>('input')
+  const [savedId, setSavedId] = useState<string | null>(null)
   const [title, setTitle] = useState('')
-  const [saving, setSaving] = useState(false)
-  const [saveError, setSaveError] = useState<string | null>(null)
-  const router = useRouter()
-  const completionRef = useRef('')
+  const [titleSaved, setTitleSaved] = useState(false)
 
   const { completion, complete, isLoading, error } = useCompletion({
     api: '/api/ai/proposal',
     streamProtocol: 'text',
-    onFinish: (_, fullCompletion) => {
-      completionRef.current = fullCompletion
+    onFinish: async (_, fullCompletion) => {
+      setStep('done')
+      // Auto-save immediately on finish
+      try {
+        const res = await fetch('/api/proposals', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            content: fullCompletion,
+            briefInput: enrichedBrief || brief,
+          }),
+        })
+        const data = await res.json()
+        if (res.ok) setSavedId(data.id)
+      } catch {
+        // Silent — user can still copy/download
+      }
     },
   })
 
@@ -30,7 +43,6 @@ export function ProposalDrafter() {
     setEnrichedBrief(enriched)
     setStep('generating')
     await complete(enriched)
-    setStep('done')
   }
 
   function handleBriefSubmit(e: React.FormEvent) {
@@ -43,8 +55,8 @@ export function ProposalDrafter() {
     setBrief('')
     setEnrichedBrief('')
     setTitle('')
-    setSaveError(null)
-    completionRef.current = ''
+    setTitleSaved(false)
+    setSavedId(null)
     setStep('input')
   }
 
@@ -58,30 +70,15 @@ export function ProposalDrafter() {
     URL.revokeObjectURL(url)
   }
 
-  async function handleSave() {
-    setSaving(true)
-    setSaveError(null)
-    try {
-      const res = await fetch('/api/proposals', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          title: title.trim() || null,
-          content: completionRef.current || completion,
-          briefInput: enrichedBrief || brief,
-        }),
-      })
-      const data = await res.json()
-      if (!res.ok) {
-        setSaveError('Could not save. Try again.')
-        return
-      }
-      router.push(`/dashboard/proposals/${data.id}`)
-    } catch {
-      setSaveError('Could not save. Try again.')
-    } finally {
-      setSaving(false)
-    }
+  async function handleSaveTitle(e: React.FormEvent) {
+    e.preventDefault()
+    if (!savedId || !title.trim()) return
+    await fetch(`/api/proposals/${savedId}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ title }),
+    })
+    setTitleSaved(true)
   }
 
   if (step === 'generating' || step === 'done') {
@@ -92,11 +89,7 @@ export function ProposalDrafter() {
             {isLoading ? 'Writing proposal...' : 'Proposal ready'}
           </h2>
           {!isLoading && (
-            <button
-              type="button"
-              onClick={handleReset}
-              className="text-sm text-gray-500 hover:text-gray-700"
-            >
+            <button type="button" onClick={handleReset} className="text-sm text-gray-500 hover:text-gray-700">
               ← Start over
             </button>
           )}
@@ -125,24 +118,38 @@ export function ProposalDrafter() {
 
         {!isLoading && completion && (
           <div className="rounded-lg border border-gray-200 bg-gray-50 p-4 space-y-3">
-            <p className="text-xs font-medium uppercase tracking-wide text-gray-400">Save proposal</p>
-            <input
-              type="text"
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              placeholder="Proposal title (optional)"
-              className="block w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-gray-900 focus:outline-none focus:ring-1 focus:ring-gray-900"
-            />
-            {saveError && <p className="text-sm text-red-600">{saveError}</p>}
-            <div className="flex gap-2">
+            <div className="flex items-center justify-between">
+              <p className="text-xs font-medium uppercase tracking-wide text-gray-400">
+                {savedId ? '✓ Saved to your proposals' : 'Saving...'}
+              </p>
+              {savedId && (
+                <Link
+                  href={`/dashboard/proposals/${savedId}`}
+                  className="text-xs text-gray-600 underline hover:text-gray-900"
+                >
+                  View saved →
+                </Link>
+              )}
+            </div>
+
+            <form onSubmit={handleSaveTitle} className="flex gap-2">
+              <input
+                type="text"
+                value={title}
+                onChange={(e) => { setTitle(e.target.value); setTitleSaved(false) }}
+                placeholder="Add a title (optional)"
+                className="flex-1 rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-gray-900 focus:outline-none focus:ring-1 focus:ring-gray-900"
+              />
               <button
-                type="button"
-                onClick={handleSave}
-                disabled={saving}
-                className="rounded-md bg-gray-900 px-4 py-2 text-sm font-medium text-white hover:bg-gray-700 disabled:opacity-50"
+                type="submit"
+                disabled={!title.trim() || !savedId}
+                className="rounded-md bg-gray-900 px-3 py-2 text-sm font-medium text-white hover:bg-gray-700 disabled:opacity-40"
               >
-                {saving ? 'Saving...' : 'Save to proposals'}
+                {titleSaved ? 'Saved' : 'Save title'}
               </button>
+            </form>
+
+            <div className="flex gap-2">
               <button
                 type="button"
                 onClick={() => navigator.clipboard.writeText(completion)}
@@ -169,9 +176,7 @@ export function ProposalDrafter() {
       <div className="space-y-4">
         <div>
           <h2 className="text-lg font-semibold text-gray-900">Sharpen the brief</h2>
-          <p className="mt-0.5 text-sm text-gray-500">
-            A few answers make for a much sharper proposal.
-          </p>
+          <p className="mt-0.5 text-sm text-gray-500">A few answers make for a much sharper proposal.</p>
         </div>
         <BriefClarifier
           brief={brief}
@@ -200,7 +205,6 @@ export function ProposalDrafter() {
           className="mt-2 block w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-gray-900 focus:outline-none focus:ring-1 focus:ring-gray-900"
         />
       </div>
-
       <button
         type="submit"
         disabled={!brief.trim()}
