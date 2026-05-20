@@ -30,8 +30,8 @@ const components: Components = {
     </blockquote>
   ),
   table: ({ children }) => (
-    <div className="my-4 w-full overflow-x-auto">
-      <table className="w-full border-collapse text-sm">{children}</table>
+    <div className="my-4 w-full">
+      <table className="w-full table-fixed border-collapse text-sm">{children}</table>
     </div>
   ),
   thead: ({ children }) => (
@@ -49,7 +49,7 @@ const components: Components = {
     </th>
   ),
   td: ({ children }) => (
-    <td className="py-2.5 px-3 text-gray-700 align-top">{children}</td>
+    <td className="py-2.5 px-3 text-gray-700 align-top break-words">{children}</td>
   ),
 }
 
