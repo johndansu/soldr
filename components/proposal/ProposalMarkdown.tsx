@@ -15,6 +15,15 @@ const components: Components = {
       {children}
     </h3>
   ),
+  ul: ({ children }) => (
+    <ul className="my-2 space-y-1 list-none pl-0">{children}</ul>
+  ),
+  ol: ({ children }) => (
+    <ol className="my-2 space-y-1 list-none pl-0">{children}</ol>
+  ),
+  li: ({ children }) => (
+    <li className="text-sm text-gray-700 pl-0">{children}</li>
+  ),
 }
 
 export function ProposalMarkdown({ content }: { content: string }) {
