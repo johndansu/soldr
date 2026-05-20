@@ -29,6 +29,28 @@ const components: Components = {
       {children}
     </blockquote>
   ),
+  table: ({ children }) => (
+    <div className="my-4 w-full overflow-x-auto">
+      <table className="w-full border-collapse text-sm">{children}</table>
+    </div>
+  ),
+  thead: ({ children }) => (
+    <thead className="border-b-2 border-gray-900">{children}</thead>
+  ),
+  tbody: ({ children }) => (
+    <tbody className="divide-y divide-gray-100">{children}</tbody>
+  ),
+  tr: ({ children }) => (
+    <tr className="even:bg-gray-50">{children}</tr>
+  ),
+  th: ({ children }) => (
+    <th className="py-2 px-3 text-left text-xs font-bold uppercase tracking-wide text-gray-500">
+      {children}
+    </th>
+  ),
+  td: ({ children }) => (
+    <td className="py-2.5 px-3 text-gray-700 align-top">{children}</td>
+  ),
 }
 
 export function ProposalMarkdown({ content }: { content: string }) {
