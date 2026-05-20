@@ -14,14 +14,14 @@ Then a markdown table with exactly three rows:
 |---|---|
 | **The problem** | One sentence naming the specific pain, using their words |
 | **The goal** | One sentence on what success looks like when this is done |
-| **Constraints** | Budget + deadline + any technical constraints from the brief |
+| **Constraints** | Budget · Deadline · any technical constraints (use · to separate, never use \| inside a table cell) |
 
 ## Proposed Approach
 Open with 2–3 sentences describing the overall solution strategy in plain language — what you're building and the core principle behind it. Then break it into named phases or components (minimum 3, maximum 5). Each component must:
 - Have a bold name as a subheading
 - Start with one sentence on WHAT you'll build
 - Follow with 2–3 sentences on WHY it solves their specific problem — be concrete, not abstract
-- End with a "You get:" line listing 2–3 specific tangible outputs the client will have in hand
+- End with a blockquote line: > **You get:** item 1 · item 2 · item 3
 Use the client's own words where possible. No generic tech jargon. Every paragraph should make the client nod and think "yes, that's exactly it."
 
 ## Timeline

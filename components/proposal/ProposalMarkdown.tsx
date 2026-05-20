@@ -24,6 +24,11 @@ const components: Components = {
   li: ({ children }) => (
     <li className="text-sm text-gray-700 pl-0">{children}</li>
   ),
+  blockquote: ({ children }) => (
+    <blockquote className="my-3 border-l-2 border-gray-900 pl-3 bg-gray-50 py-2 rounded-r text-sm text-gray-800 not-italic font-normal">
+      {children}
+    </blockquote>
+  ),
 }
 
 export function ProposalMarkdown({ content }: { content: string }) {
