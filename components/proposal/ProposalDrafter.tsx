@@ -63,7 +63,7 @@ export function ProposalDrafter() {
 
         <div className="min-h-64 rounded-lg border border-gray-200 bg-white p-6">
           {completion ? (
-            <div className="prose prose-sm max-w-none prose-headings:font-semibold prose-table:text-sm prose-td:py-2 prose-th:py-2">
+            <div className="prose prose-sm max-w-none prose-headings:font-bold prose-headings:text-center prose-table:text-sm prose-td:py-2 prose-th:py-2">
               <ReactMarkdown remarkPlugins={[remarkGfm]}>{completion}</ReactMarkdown>
             </div>
           ) : isLoading ? (
