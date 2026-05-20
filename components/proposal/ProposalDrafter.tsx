@@ -16,6 +16,7 @@ export function ProposalDrafter() {
   const [savedId, setSavedId] = useState<string | null>(null)
   const [saving, setSaving] = useState(false)
   const [saveError, setSaveError] = useState<string | null>(null)
+  const [generatingTitle, setGeneratingTitle] = useState(false)
 
   const { completion, complete, isLoading, error } = useCompletion({
     api: '/api/ai/proposal',
@@ -55,6 +56,23 @@ export function ProposalDrafter() {
     a.download = `${title.trim() || 'proposal'}.md`
     a.click()
     URL.revokeObjectURL(url)
+  }
+
+  async function handleGenerateTitle() {
+    setGeneratingTitle(true)
+    try {
+      const res = await fetch('/api/ai/title', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ brief: enrichedBrief || brief }),
+      })
+      const data = await res.json()
+      if (data.title) setTitle(data.title)
+    } catch {
+      // Silent
+    } finally {
+      setGeneratingTitle(false)
+    }
   }
 
   async function handleSave(e: React.FormEvent) {
@@ -133,13 +151,23 @@ export function ProposalDrafter() {
               </div>
             ) : (
               <form onSubmit={handleSave} className="space-y-2">
-                <input
-                  type="text"
-                  value={title}
-                  onChange={(e) => setTitle(e.target.value)}
-                  placeholder="Proposal title (optional)"
-                  className="block w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-gray-900 focus:outline-none focus:ring-1 focus:ring-gray-900"
-                />
+                <div className="flex gap-2">
+                  <input
+                    type="text"
+                    value={title}
+                    onChange={(e) => setTitle(e.target.value)}
+                    placeholder="Proposal title (optional)"
+                    className="flex-1 rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-gray-900 focus:outline-none focus:ring-1 focus:ring-gray-900"
+                  />
+                  <button
+                    type="button"
+                    onClick={handleGenerateTitle}
+                    disabled={generatingTitle}
+                    className="rounded-md border border-gray-300 px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50 whitespace-nowrap"
+                  >
+                    {generatingTitle ? '...' : 'Generate'}
+                  </button>
+                </div>
                 {saveError && <p className="text-sm text-red-600">{saveError}</p>}
                 <button
                   type="submit"
