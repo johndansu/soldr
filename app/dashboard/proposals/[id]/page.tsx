@@ -1,9 +1,8 @@
 import { createClient } from '@/lib/supabase/server'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
-import ReactMarkdown from 'react-markdown'
-import remarkGfm from 'remark-gfm'
 import { CopyButton } from '@/components/proposal/CopyButton'
+import { ProposalMarkdown } from '@/components/proposal/ProposalMarkdown'
 
 export default async function ProposalPage({ params }: { params: { id: string } }) {
   const supabase = createClient()
@@ -45,9 +44,7 @@ export default async function ProposalPage({ params }: { params: { id: string } 
       </div>
 
       <div className="rounded-lg border border-gray-200 bg-white p-6">
-        <div className="prose prose-sm max-w-none prose-headings:font-bold prose-headings:text-center prose-table:text-sm prose-td:py-2 prose-th:py-2">
-          <ReactMarkdown remarkPlugins={[remarkGfm]}>{proposal.content}</ReactMarkdown>
-        </div>
+        <ProposalMarkdown content={proposal.content} />
       </div>
 
       <div className="rounded-lg border border-gray-200 bg-gray-50 p-4">

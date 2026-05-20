@@ -2,9 +2,8 @@
 
 import { useState } from 'react'
 import { useCompletion } from '@ai-sdk/react'
-import ReactMarkdown from 'react-markdown'
-import remarkGfm from 'remark-gfm'
 import { BriefClarifier } from './BriefClarifier'
+import { ProposalMarkdown } from './ProposalMarkdown'
 
 type Step = 'input' | 'clarify' | 'generating' | 'done'
 
@@ -63,9 +62,7 @@ export function ProposalDrafter() {
 
         <div className="min-h-64 rounded-lg border border-gray-200 bg-white p-6">
           {completion ? (
-            <div className="prose prose-sm max-w-none prose-headings:font-bold prose-headings:text-center prose-table:text-sm prose-td:py-2 prose-th:py-2">
-              <ReactMarkdown remarkPlugins={[remarkGfm]}>{completion}</ReactMarkdown>
-            </div>
+            <ProposalMarkdown content={completion} />
           ) : isLoading ? (
             <div className="flex items-center gap-2 text-sm text-gray-400">
               <span className="inline-block h-1.5 w-1.5 animate-pulse rounded-full bg-gray-400" />
