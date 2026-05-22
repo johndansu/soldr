@@ -26,30 +26,26 @@ export default async function ProposalPage({ params }: { params: { id: string } 
     <div className="space-y-6">
       <div className="flex items-start justify-between">
         <div>
-          <Link
-            href="/dashboard/proposals"
-            className="text-sm text-gray-500 hover:text-gray-700"
-          >
+          <Link href="/dashboard/proposals" className="text-sm text-gray-400 hover:text-gray-700">
             ← Proposals
           </Link>
-          <h1 className="mt-2 text-2xl font-bold text-gray-900">
+          <h1 className="mt-2 text-xl font-semibold text-gray-900">
             {proposal.title ?? 'Proposal'}
           </h1>
-          <p className="mt-1 text-sm text-gray-500">
+          <p className="mt-0.5 text-sm text-gray-400">
             {client?.name ? `${client.name} · ` : ''}{date}
           </p>
         </div>
-
         <CopyButton text={proposal.content} />
       </div>
 
-      <div className="rounded-lg border border-gray-200 bg-white p-6">
+      <div className="rounded-lg border border-gray-200 bg-white p-8">
         <ProposalMarkdown content={proposal.content} />
       </div>
 
-      <div className="rounded-lg border border-gray-200 bg-gray-50 p-4">
-        <p className="text-xs font-medium uppercase tracking-wide text-gray-400">Original brief</p>
-        <p className="mt-1 whitespace-pre-wrap text-sm text-gray-600">{proposal.brief_input}</p>
+      <div className="rounded-lg border border-gray-200 bg-white p-5">
+        <p className="text-xs font-semibold uppercase tracking-wide text-gray-400">Original brief</p>
+        <p className="mt-2 whitespace-pre-wrap text-sm text-gray-600 leading-relaxed">{proposal.brief_input}</p>
       </div>
     </div>
   )

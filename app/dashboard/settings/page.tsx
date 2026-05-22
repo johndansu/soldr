@@ -13,11 +13,8 @@ export default async function SettingsPage() {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold text-gray-900">Settings</h1>
-        <p className="mt-1 text-sm text-gray-500">Manage your API key and account preferences.</p>
-      </div>
-      <div className="max-w-lg">
+      <h1 className="text-xl font-semibold text-gray-900">Settings</h1>
+      <div className="max-w-lg rounded-lg border border-gray-200 bg-white p-6">
         <ApiKeyForm initialKeySet={settings?.api_key_set ?? false} />
       </div>
     </div>

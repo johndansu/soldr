@@ -46,7 +46,6 @@ export function ApiKeyForm({ initialKeySet }: { initialKeySet: boolean }) {
     try {
       await fetch('/api/settings/api-key', { method: 'DELETE' })
       setKeySet(false)
-      setSuccess(false)
     } catch {
       setError('Could not remove key. Try again.')
     } finally {
@@ -55,23 +54,23 @@ export function ApiKeyForm({ initialKeySet }: { initialKeySet: boolean }) {
   }
 
   return (
-    <div className="rounded-lg border border-gray-200 bg-white p-6 space-y-4">
+    <div className="space-y-5">
       <div>
-        <h2 className="text-sm font-semibold text-gray-900">Anthropic API Key</h2>
+        <p className="text-xs font-semibold uppercase tracking-wide text-gray-400">Anthropic API Key</p>
         <p className="mt-1 text-sm text-gray-500">
           Your key is encrypted with AES-256-GCM and never exposed to the browser.
           Get yours at{' '}
-          <a href="https://console.anthropic.com" target="_blank" rel="noopener noreferrer" className="underline hover:text-gray-900">
+          <a href="https://console.anthropic.com" target="_blank" rel="noopener noreferrer" className="text-gray-900 underline">
             console.anthropic.com
           </a>.
         </p>
       </div>
 
       {keySet && (
-        <div className="flex items-center justify-between rounded-md bg-green-50 border border-green-200 px-4 py-3">
-          <div className="flex items-center gap-2">
-            <span className="text-green-600 text-sm font-medium">✓ API key saved</span>
-            <span className="text-green-500 text-xs">sk-ant-••••••••••••••••</span>
+        <div className="flex items-center justify-between border-t border-b border-gray-200 py-3">
+          <div>
+            <p className="text-sm font-medium text-green-600">● Key saved</p>
+            <p className="text-xs text-gray-400 font-mono mt-0.5">sk-ant-••••••••••••••••</p>
           </div>
           <button
             type="button"
@@ -86,9 +85,7 @@ export function ApiKeyForm({ initialKeySet }: { initialKeySet: boolean }) {
 
       <form onSubmit={handleSave} className="space-y-3">
         <div>
-          <label className="block text-sm font-medium text-gray-700">
-            {keySet ? 'Replace key' : 'Add key'}
-          </label>
+          <label className="block text-sm font-medium text-gray-700">{keySet ? 'Replace key' : 'Add key'}</label>
           <input
             type="password"
             value={apiKey}
@@ -99,7 +96,7 @@ export function ApiKeyForm({ initialKeySet }: { initialKeySet: boolean }) {
           />
         </div>
         {error && <p className="text-sm text-red-600">{error}</p>}
-        {success && <p className="text-sm text-green-600">Key saved successfully.</p>}
+        {success && <p className="text-sm text-green-600">Key saved.</p>}
         <button
           type="submit"
           disabled={!apiKey.trim() || saving}

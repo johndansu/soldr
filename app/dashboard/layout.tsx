@@ -1,52 +1,49 @@
+'use client'
+
 import Link from 'next/link'
-import { createClient } from '@/lib/supabase/server'
-import { redirect } from 'next/navigation'
+import { usePathname } from 'next/navigation'
 
-export default async function DashboardLayout({
-  children,
-}: {
-  children: React.ReactNode
-}) {
-  const supabase = createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-
-  if (!user) redirect('/login')
-
+export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   return (
     <div className="flex min-h-screen bg-gray-50">
-      <aside className="w-56 shrink-0 border-r border-gray-200 bg-white">
-        <div className="flex h-full flex-col">
-          <div className="px-4 py-5">
-            <span className="text-lg font-bold text-gray-900">Soldr</span>
-          </div>
+      <aside className="w-52 shrink-0 bg-gray-950 flex flex-col">
+        <div className="px-5 py-5">
+          <span className="text-white font-semibold text-base tracking-tight">Soldr</span>
+        </div>
 
-          <nav className="flex-1 space-y-1 px-2 py-2">
-            <NavLink href="/dashboard">Dashboard</NavLink>
-            <NavLink href="/dashboard/proposals">Proposals</NavLink>
-            <NavLink href="/dashboard/nudge">Payment Nudge</NavLink>
-            <NavLink href="/dashboard/scope">Scope Creep</NavLink>
-            <NavLink href="/dashboard/clients">Clients</NavLink>
-            <NavLink href="/dashboard/invoices">Invoices</NavLink>
-          </nav>
+        <nav className="flex-1 px-3 py-2 space-y-0.5">
+          <NavLink href="/dashboard">Dashboard</NavLink>
+          <NavLink href="/dashboard/proposals">Proposals</NavLink>
+          <NavLink href="/dashboard/nudge">Payment Nudge</NavLink>
+          <NavLink href="/dashboard/scope">Scope Creep</NavLink>
+          <NavLink href="/dashboard/clients">Clients</NavLink>
+          <NavLink href="/dashboard/invoices">Invoices</NavLink>
+        </nav>
 
-          <div className="border-t border-gray-200 px-2 py-2">
-            <NavLink href="/dashboard/settings">Settings</NavLink>
-          </div>
+        <div className="border-t border-white/10 px-3 py-3">
+          <NavLink href="/dashboard/settings">Settings</NavLink>
         </div>
       </aside>
 
       <main className="flex-1 overflow-auto">
-        <div className="mx-auto max-w-5xl px-6 py-8">{children}</div>
+        <div className="mx-auto max-w-4xl px-8 py-8">{children}</div>
       </main>
     </div>
   )
 }
 
 function NavLink({ href, children }: { href: string; children: React.ReactNode }) {
+  const pathname = usePathname()
+  const active = pathname === href || (href !== '/dashboard' && pathname.startsWith(href))
+
   return (
     <Link
       href={href}
-      className="flex items-center rounded-md px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 hover:text-gray-900"
+      className={`flex items-center rounded-md px-3 py-2 text-sm font-medium transition-colors ${
+        active
+          ? 'bg-white/10 text-white'
+          : 'text-gray-400 hover:bg-white/5 hover:text-white'
+      }`}
     >
       {children}
     </Link>
