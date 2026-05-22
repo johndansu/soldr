@@ -1,12 +1,6 @@
 import { createClient } from '@/lib/supabase/server'
 import Link from 'next/link'
-
-const STATUS_STYLE: Record<string, string> = {
-  unpaid:    'bg-yellow-50 text-yellow-700',
-  paid:      'bg-green-50 text-green-700',
-  overdue:   'bg-red-50 text-red-700',
-  cancelled: 'bg-gray-100 text-gray-500',
-}
+import { InvoiceStatusButton } from '@/components/invoices/InvoiceStatusButton'
 
 export default async function InvoicesPage() {
   const supabase = createClient()
@@ -72,9 +66,7 @@ export default async function InvoicesPage() {
                       {new Date(inv.due_date).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}
                     </td>
                     <td className="px-4 py-3">
-                      <span className={`inline-flex rounded-full px-2 py-0.5 text-xs font-medium ${STATUS_STYLE[inv.status] ?? 'bg-gray-100 text-gray-500'}`}>
-                        {inv.status}
-                      </span>
+                      <InvoiceStatusButton id={inv.id} status={inv.status as 'unpaid' | 'paid' | 'overdue' | 'cancelled'} />
                     </td>
                   </tr>
                 )
