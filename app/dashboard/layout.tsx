@@ -24,6 +24,7 @@ export default async function DashboardLayout({
             <NavLink href="/dashboard">Dashboard</NavLink>
             <NavLink href="/dashboard/proposals">Proposals</NavLink>
             <NavLink href="/dashboard/nudge">Payment Nudge</NavLink>
+            <NavLink href="/dashboard/scope">Scope Creep</NavLink>
             <NavLink href="/dashboard/clients">Clients</NavLink>
             <NavLink href="/dashboard/invoices">Invoices</NavLink>
           </nav>
