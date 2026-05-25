@@ -29,7 +29,7 @@
 - [ ] Client portal — one `/portal/[token]` URL per client showing all their invoices, proposals, and contracts
 
 ### Automation
-- [ ] Overdue invoice reminders — auto-email clients on day 1, 7, 14 after due date (cron-based)
+- [x] Overdue invoice reminders — auto-email clients on day 1, 7, 14 after due date (cron-based)
 - [ ] Proposal follow-up reminders — alert when a sent proposal has no response after X days
 - [ ] Contract expiry warnings — alert before a contract end date passes
 

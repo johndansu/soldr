@@ -207,6 +207,68 @@ export async function sendContractSignedEmail(p: ContractSignedParams) {
   })
 }
 
+// ─── Overdue invoice reminder (to client) ────────────────────────────────────
+
+interface OverdueReminderParams {
+  to: string
+  clientName: string
+  businessName: string
+  invoiceNumber: string
+  amount: string
+  dueDate: string
+  daysOverdue: number
+  publicUrl: string
+}
+
+export async function sendOverdueReminderEmail(p: OverdueReminderParams) {
+  if (!isConfigured()) throw new Error('RESEND_API_KEY not set')
+
+  const urgency = p.daysOverdue >= 14
+    ? `This is our final reminder.`
+    : p.daysOverdue >= 7
+    ? `This is a follow-up reminder.`
+    : `This is a friendly reminder.`
+
+  return resend.emails.send({
+    from: FROM,
+    to: p.to,
+    subject: `Payment reminder: ${p.invoiceNumber} is ${p.daysOverdue} day${p.daysOverdue === 1 ? '' : 's'} overdue`,
+    html: `
+<!DOCTYPE html>
+<html>
+<body style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f9fafb;margin:0;padding:40px 16px">
+  <div style="max-width:520px;margin:0 auto;background:#fff;border-radius:16px;border:1px solid #e5e7eb;overflow:hidden">
+    <div style="background:#fef2f2;border-bottom:1px solid #fecaca;padding:20px 32px">
+      <p style="margin:0;font-size:11px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:#ef4444">Payment overdue</p>
+      <p style="margin:4px 0 0;font-size:18px;font-weight:700;color:#111827">${p.invoiceNumber}</p>
+    </div>
+    <div style="padding:32px 32px 24px">
+      <p style="margin:0 0 8px;font-size:14px;color:#6b7280">Hi ${p.clientName},</p>
+      <p style="margin:0 0 24px;font-size:14px;color:#6b7280;line-height:1.6">
+        ${urgency} Invoice <strong style="color:#111827">${p.invoiceNumber}</strong> from <strong style="color:#111827">${p.businessName}</strong> is now <strong style="color:#dc2626">${p.daysOverdue} day${p.daysOverdue === 1 ? '' : 's'} overdue</strong>.
+      </p>
+      <div style="background:#fef2f2;border:1px solid #fecaca;border-radius:12px;padding:20px;margin-bottom:24px">
+        <div style="display:flex;justify-content:space-between;margin-bottom:8px">
+          <span style="font-size:13px;color:#6b7280">Amount due</span>
+          <span style="font-size:13px;font-weight:700;color:#dc2626">${p.amount}</span>
+        </div>
+        <div style="display:flex;justify-content:space-between">
+          <span style="font-size:13px;color:#6b7280">Was due</span>
+          <span style="font-size:13px;color:#111827">${p.dueDate}</span>
+        </div>
+      </div>
+      <a href="${p.publicUrl}" style="display:block;text-align:center;background:#dc2626;color:#fff;text-decoration:none;font-size:14px;font-weight:500;padding:12px 24px;border-radius:10px">View &amp; pay invoice →</a>
+      <p style="margin:16px 0 0;font-size:12px;color:#9ca3af;text-align:center">If you have already arranged payment, please disregard this message.</p>
+    </div>
+    <div style="padding:16px 32px;border-top:1px solid #f3f4f6;text-align:center">
+      <p style="margin:0;font-size:11px;color:#d1d5db">Sent via <strong>Soldr</strong></p>
+    </div>
+  </div>
+</body>
+</html>`,
+  })
+}
+
 // ─── Proposal accepted (notify freelancer) ───────────────────────────────────
 
 interface ProposalAcceptedParams {
