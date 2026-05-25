@@ -67,6 +67,7 @@ export function IncomeReport() {
   const [to, setTo] = useState(PRESETS[0].to)
   const [data, setData] = useState<IncomeReportData | null>(null)
   const [expenseData, setExpenseData] = useState<ExpenseReportData | null>(null)
+  const [taxAsidePct, setTaxAsidePct] = useState(0)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
   const [activeCurrency, setActiveCurrency] = useState<string | null>(null)
@@ -75,9 +76,10 @@ export function IncomeReport() {
     setLoading(true)
     setError('')
     try {
-      const [incRes, expRes] = await Promise.all([
+      const [incRes, expRes, settingsRes] = await Promise.all([
         fetch(`/api/reports/income?from=${f}&to=${t}`),
         fetch(`/api/reports/expenses?from=${f}&to=${t}`),
+        fetch('/api/settings/business'),
       ])
       if (!incRes.ok) { setError('Failed to load report'); return }
       const json: IncomeReportData = await incRes.json()
@@ -86,6 +88,10 @@ export function IncomeReport() {
         setActiveCurrency((prev) => json.currencies.includes(prev ?? '') ? prev : json.currencies[0])
       }
       if (expRes.ok) setExpenseData(await expRes.json())
+      if (settingsRes.ok) {
+        const s = await settingsRes.json()
+        setTaxAsidePct(Number(s.tax_aside_pct) || 0)
+      }
     } catch {
       setError('Network error')
     } finally {
@@ -258,6 +264,12 @@ export function IncomeReport() {
                           <span>Profit margin</span>
                           <span className={`font-semibold ${margin >= 0 ? 'text-green-600' : 'text-red-500'}`}>{margin}%</span>
                         </div>
+                        {taxAsidePct > 0 && income > 0 && (
+                          <div className="flex justify-between items-center text-xs text-amber-600 bg-amber-50 rounded-lg px-3 py-2 mt-2">
+                            <span>Tax set-aside ({taxAsidePct}% of collected)</span>
+                            <span className="font-semibold">{fmt(income * taxAsidePct / 100, report.currency)}</span>
+                          </div>
+                        )}
                       </div>
 
                       {catRows.length > 0 && (

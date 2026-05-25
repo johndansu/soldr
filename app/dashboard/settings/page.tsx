@@ -9,7 +9,7 @@ export default async function SettingsPage() {
 
   const { data: settings } = await supabase
     .from('user_settings')
-    .select('api_key_set, business_name, business_email, business_address, business_phone, bank_details, default_tax_rate, default_currency, invoice_prefix')
+    .select('api_key_set, business_name, business_email, business_address, business_phone, bank_details, default_tax_rate, default_currency, invoice_prefix, logo_url, email_signature, tax_aside_pct')
     .eq('user_id', user!.id)
     .single()
 
@@ -27,14 +27,17 @@ export default async function SettingsPage() {
           <h2 className="text-sm font-semibold text-gray-900 mb-1">Business Profile</h2>
           <p className="text-xs text-gray-400 mb-5">Printed on every invoice and client-facing document.</p>
           <BusinessProfileForm initial={{
-            business_name: settings?.business_name ?? null,
-            business_email: settings?.business_email ?? null,
+            business_name:    settings?.business_name    ?? null,
+            business_email:   settings?.business_email   ?? null,
             business_address: settings?.business_address ?? null,
-            business_phone: settings?.business_phone ?? null,
-            bank_details: settings?.bank_details ?? null,
+            business_phone:   settings?.business_phone   ?? null,
+            bank_details:     settings?.bank_details     ?? null,
             default_tax_rate: settings?.default_tax_rate ?? null,
             default_currency: settings?.default_currency ?? null,
-            invoice_prefix: settings?.invoice_prefix ?? null,
+            invoice_prefix:   settings?.invoice_prefix   ?? null,
+            logo_url:         settings?.logo_url         ?? null,
+            email_signature:  settings?.email_signature  ?? null,
+            tax_aside_pct:    settings?.tax_aside_pct    ?? null,
           }} />
         </div>
       </div>

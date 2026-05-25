@@ -39,7 +39,7 @@ export default async function PublicInvoicePage({ params }: { params: { token: s
 
   const { data: settings } = await supabase
     .from('user_settings')
-    .select('business_name, business_email, business_address, business_phone, bank_details')
+    .select('business_name, business_email, business_address, business_phone, bank_details, logo_url')
     .eq('user_id', invoice.user_id)
     .single()
 
@@ -79,9 +79,14 @@ export default async function PublicInvoicePage({ params }: { params: { token: s
               <div className="space-y-0.5 min-w-0">
                 {settings?.business_name ? (
                   <div className="flex items-center gap-2.5 mb-3">
-                    <div className="w-8 h-8 rounded-lg bg-gray-900 text-white text-sm font-bold flex items-center justify-center shrink-0">
-                      {settings.business_name[0].toUpperCase()}
-                    </div>
+                    {settings.logo_url ? (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img src={settings.logo_url} alt={settings.business_name} className="w-8 h-8 rounded-lg object-contain shrink-0" />
+                    ) : (
+                      <div className="w-8 h-8 rounded-lg bg-gray-900 text-white text-sm font-bold flex items-center justify-center shrink-0">
+                        {settings.business_name[0].toUpperCase()}
+                      </div>
+                    )}
                     <span className="font-semibold text-gray-900 text-[15px]">{settings.business_name}</span>
                   </div>
                 ) : null}

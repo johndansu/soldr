@@ -49,6 +49,6 @@
 - [ ] Revenue forecast — based on recurring templates and open proposals
 
 ### Settings & Branding
-- [ ] Logo upload — appears on invoices and public-facing pages
-- [ ] Custom email signature — personalised sign-off on all outbound emails
+- [x] Logo upload — appears on invoices and public-facing pages
+- [x] Custom email signature — personalised sign-off on all outbound emails
 - [x] Custom invoice prefix — e.g. `ACME-001` instead of `INV-001`
