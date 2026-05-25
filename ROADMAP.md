@@ -23,7 +23,7 @@
 - [ ] Auto late fees — add a late fee to overdue invoices after a set number of days
 
 ### Documents & Client-facing
-- [ ] PDF export — one-click PDF download for invoices and contracts
+- [x] PDF export — one-click PDF download for invoices and contracts
 - [ ] Proposal templates — save a proposal as a reusable template
 - [ ] Contract templates — save a contract as a reusable template
 - [ ] Client portal — one `/portal/[token]` URL per client showing all their invoices, proposals, and contracts

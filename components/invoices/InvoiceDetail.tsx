@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { SendButton } from '@/components/ui/SendButton'
+import { DownloadPDFButton } from '@/components/ui/DownloadPDFButton'
 
 interface LineItem { description: string; qty: number; rate: number }
 interface Payment { id: string; amount: number; paid_date: string; notes: string | null }
@@ -235,6 +236,10 @@ export function InvoiceDetail({ invoice, business, payments: initialPayments }: 
               successLabel="Sent!"
             />
           )}
+          <DownloadPDFButton
+            endpoint={`/api/invoices/${invoice.id}/pdf`}
+            filename={`${invoice.invoice_number ?? 'invoice'}.pdf`}
+          />
           <button type="button" onClick={() => window.print()}
             className="rounded-xl border border-gray-200 px-4 py-2 text-sm font-medium text-gray-600 hover:bg-gray-50 transition-colors">
             Print

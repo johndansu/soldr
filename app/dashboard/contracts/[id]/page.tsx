@@ -7,6 +7,7 @@ import { SendButton } from '@/components/ui/SendButton'
 import { ContractShareButton } from '@/components/contracts/ContractShareButton'
 import { ContractStatusButton } from '@/components/contracts/ContractStatusButton'
 import { ContractDocument } from '@/components/contracts/ContractDocument'
+import { DownloadPDFButton } from '@/components/ui/DownloadPDFButton'
 
 const STATUS_STEPS = [
   { key: 'draft',  label: 'Drafted' },
@@ -89,6 +90,10 @@ export default async function ContractPage({ params }: { params: { id: string } 
               />
             )}
             {contract.public_token && <ContractShareButton token={contract.public_token} />}
+            <DownloadPDFButton
+              endpoint={`/api/contracts/${contract.id}/pdf`}
+              filename={`${(contract.title ?? 'contract').toLowerCase().replace(/[^a-z0-9]+/g, '-')}.pdf`}
+            />
             <DeleteButton endpoint={`/api/contracts/${contract.id}`} redirectTo="/dashboard/contracts" />
           </div>
         </div>
