@@ -33,7 +33,7 @@ export function NewClientForm() {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4 rounded-lg border border-gray-200 bg-white p-6">
+    <form onSubmit={handleSubmit} className="space-y-4 rounded-lg border border-gray-200 bg-white shadow-sm p-6">
       <div>
         <label className="block text-sm font-medium text-gray-700">Name <span className="text-red-500">*</span></label>
         <input

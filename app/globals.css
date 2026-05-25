@@ -1,3 +1,57 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+  body {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  * {
+    box-sizing: border-box;
+  }
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.stagger-0 { animation: fadeInUp 0.4s ease forwards; animation-delay: 0ms; }
+.stagger-1 { animation: fadeInUp 0.4s ease forwards; animation-delay: 120ms; }
+.stagger-2 { animation: fadeInUp 0.4s ease forwards; animation-delay: 240ms; }
+.stagger-3 { animation: fadeInUp 0.4s ease forwards; animation-delay: 360ms; }
+.stagger-4 { animation: fadeInUp 0.4s ease forwards; animation-delay: 480ms; }
+.stagger-5 { animation: fadeInUp 0.4s ease forwards; animation-delay: 600ms; }
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+.cursor-blink {
+  animation: blink 0.7s step-end infinite;
+}
+
+@media print {
+  @page {
+    margin: 1.5cm;
+    size: A4;
+  }
+
+  body {
+    background: white !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+}
+
+@layer utilities {
+  .ai-bg {
+    background-color: #f7f8fc;
+    background-image:
+      radial-gradient(ellipse 110% 55% at 55% 0%, rgba(99, 102, 241, 0.07) 0%, transparent 65%),
+      radial-gradient(ellipse 45% 35% at 100% 100%, rgba(168, 85, 247, 0.05) 0%, transparent 55%);
+  }
+}

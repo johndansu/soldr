@@ -79,7 +79,7 @@ export function ClientNotes({ clientId, initialNotes }: { clientId: string; init
       </div>
 
       {summary && (
-        <div className="rounded-lg border border-gray-200 bg-white p-5">
+        <div className="rounded-lg border border-gray-200 bg-white shadow-sm p-5">
           <p className="text-xs font-semibold uppercase tracking-wide text-gray-400 mb-2">Pre-call briefing</p>
           <p className="text-sm text-gray-700 whitespace-pre-wrap leading-relaxed">{summary}</p>
           <button type="button" onClick={() => setSummary(null)} className="mt-3 text-xs text-gray-400 hover:text-gray-600">
@@ -109,7 +109,7 @@ export function ClientNotes({ clientId, initialNotes }: { clientId: string; init
       ) : (
         <div className="space-y-2">
           {notes.map((note) => (
-            <div key={note.id} className="flex items-start justify-between gap-3 rounded-lg border border-gray-200 bg-white px-4 py-3">
+            <div key={note.id} className="flex items-start justify-between gap-3 rounded-lg border border-gray-200 bg-white shadow-sm px-4 py-3">
               <div className="min-w-0">
                 <p className="text-sm text-gray-700">{note.content}</p>
                 <p className="mt-1 text-xs text-gray-400">

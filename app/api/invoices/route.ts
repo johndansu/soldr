@@ -8,7 +8,7 @@ export async function GET() {
 
   const { data, error } = await supabase
     .from('invoices')
-    .select('id, amount, currency, due_date, status, description, created_at, clients(name)')
+    .select('id, amount, currency, due_date, status, description, invoice_number, created_at, clients(name)')
     .eq('user_id', user.id)
     .order('created_at', { ascending: false })
 
@@ -17,8 +17,10 @@ export async function GET() {
 }
 
 export async function POST(req: NextRequest) {
-  const { clientId, amount, currency, dueDate, description } = await req.json()
-  if (!clientId || !amount || !dueDate) {
+  const body = await req.json()
+  const { clientId, invoiceNumber, dueDate, currency, description, lineItems, discount, discountType, taxRate, notes, proposalId, projectId } = body
+
+  if (!clientId || !dueDate) {
     return Response.json({ error: 'BAD_REQUEST' }, { status: 400 })
   }
 
@@ -26,15 +28,49 @@ export async function POST(req: NextRequest) {
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return Response.json({ error: 'UNAUTHORIZED' }, { status: 401 })
 
+  // Compute total from line items
+  const items = (lineItems as Array<{ description: string; qty: number; rate: number }>) || []
+  const subtotal = items.reduce((sum, i) => sum + i.qty * i.rate, 0)
+  const discountAmt = discountType === 'percentage'
+    ? subtotal * (discount || 0) / 100
+    : (discount || 0)
+  const afterDiscount = subtotal - discountAmt
+  const taxAmt = afterDiscount * (taxRate || 0) / 100
+  const total = afterDiscount + taxAmt
+
+  // Resolve invoice number — auto-generate if not provided
+  let finalInvoiceNumber = invoiceNumber?.trim() || null
+  const { data: settings } = await supabase
+    .from('user_settings')
+    .select('invoice_sequence')
+    .eq('user_id', user.id)
+    .single()
+
+  const nextSeq = (settings?.invoice_sequence ?? 0) + 1
+  if (!finalInvoiceNumber) {
+    finalInvoiceNumber = `INV-${String(nextSeq).padStart(3, '0')}`
+  }
+  await supabase
+    .from('user_settings')
+    .upsert({ user_id: user.id, invoice_sequence: nextSeq }, { onConflict: 'user_id' })
+
   const { data, error } = await supabase
     .from('invoices')
     .insert({
       user_id: user.id,
       client_id: clientId,
-      amount: parseFloat(amount),
+      invoice_number: finalInvoiceNumber,
+      amount: total,
       currency: currency || 'NGN',
       due_date: dueDate,
-      description: description?.trim() || null,
+      description: description || null,
+      line_items: items,
+      tax_rate: taxRate || 0,
+      discount: discount || 0,
+      discount_type: discountType || 'percentage',
+      notes: notes || null,
+      proposal_id: proposalId || null,
+      project_id: projectId || null,
       status: 'unpaid',
     })
     .select('id')
