@@ -8,7 +8,7 @@ export async function GET() {
 
   const { data } = await supabase
     .from('user_settings')
-    .select('business_name, business_email, business_address, business_phone, bank_details, default_tax_rate, default_currency')
+    .select('business_name, business_email, business_address, business_phone, bank_details, default_tax_rate, default_currency, invoice_prefix')
     .eq('user_id', user.id)
     .single()
 
@@ -32,6 +32,7 @@ export async function PATCH(req: NextRequest) {
       bank_details:     body.bankDetails     ?? null,
       default_tax_rate: body.defaultTaxRate  ?? 0,
       default_currency: body.defaultCurrency ?? 'NGN',
+      invoice_prefix:   body.invoicePrefix?.trim().toUpperCase() || 'INV',
     }, { onConflict: 'user_id' })
 
   if (error) return Response.json({ error: 'DB_ERROR' }, { status: 500 })

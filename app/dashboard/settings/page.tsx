@@ -9,7 +9,7 @@ export default async function SettingsPage() {
 
   const { data: settings } = await supabase
     .from('user_settings')
-    .select('api_key_set, business_name, business_email, business_address, business_phone, bank_details, default_tax_rate, default_currency')
+    .select('api_key_set, business_name, business_email, business_address, business_phone, bank_details, default_tax_rate, default_currency, invoice_prefix')
     .eq('user_id', user!.id)
     .single()
 
@@ -34,6 +34,7 @@ export default async function SettingsPage() {
             bank_details: settings?.bank_details ?? null,
             default_tax_rate: settings?.default_tax_rate ?? null,
             default_currency: settings?.default_currency ?? null,
+            invoice_prefix: settings?.invoice_prefix ?? null,
           }} />
         </div>
       </div>

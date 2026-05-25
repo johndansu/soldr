@@ -42,12 +42,13 @@ export async function POST(_req: NextRequest, { params }: { params: { id: string
   // Auto-generate invoice number
   const { data: settings } = await supabase
     .from('user_settings')
-    .select('invoice_sequence')
+    .select('invoice_sequence, invoice_prefix')
     .eq('user_id', user.id)
     .single()
 
   const nextSeq = (settings?.invoice_sequence ?? 0) + 1
-  const invoiceNumber = `INV-${String(nextSeq).padStart(3, '0')}`
+  const prefix = settings?.invoice_prefix?.trim().toUpperCase() || 'INV'
+  const invoiceNumber = `${prefix}-${String(nextSeq).padStart(3, '0')}`
 
   await supabase
     .from('user_settings')

@@ -10,6 +10,7 @@ interface BusinessProfile {
   bankDetails: string
   defaultTaxRate: string
   defaultCurrency: string
+  invoicePrefix: string
 }
 
 interface Props {
@@ -21,6 +22,7 @@ interface Props {
     bank_details: string | null
     default_tax_rate: number | null
     default_currency: string | null
+    invoice_prefix: string | null
   }
 }
 
@@ -33,6 +35,7 @@ export function BusinessProfileForm({ initial }: Props) {
     bankDetails:     initial.bank_details     ?? '',
     defaultTaxRate:  String(initial.default_tax_rate ?? 0),
     defaultCurrency: initial.default_currency ?? 'NGN',
+    invoicePrefix:   initial.invoice_prefix   ?? 'INV',
   })
   const [saving, setSaving] = useState(false)
   const [saved, setSaved] = useState(false)
@@ -100,7 +103,7 @@ export function BusinessProfileForm({ initial }: Props) {
         <p className="mt-1 text-xs text-gray-400">Printed on every invoice under Notes.</p>
       </div>
 
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-3 gap-4">
         <div>
           <label className="block text-xs font-medium text-gray-500 mb-1.5">Default tax rate (%)</label>
           <input type="number" min="0" max="100" step="0.01" value={form.defaultTaxRate}
@@ -116,6 +119,18 @@ export function BusinessProfileForm({ initial }: Props) {
             <option value="EUR">€ EUR</option>
             <option value="GHS">GH₵ GHS</option>
           </select>
+        </div>
+        <div>
+          <label className="block text-xs font-medium text-gray-500 mb-1.5">Invoice prefix</label>
+          <div className="relative">
+            <input type="text" value={form.invoicePrefix}
+              onChange={(e) => set('invoicePrefix', e.target.value.toUpperCase().replace(/[^A-Z0-9-]/g, '').slice(0, 10))}
+              placeholder="INV" className={field} />
+            <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-gray-400 pointer-events-none">
+              {form.invoicePrefix || 'INV'}-001
+            </span>
+          </div>
+          <p className="mt-1 text-xs text-gray-400">Used for auto-generated invoice numbers.</p>
         </div>
       </div>
 

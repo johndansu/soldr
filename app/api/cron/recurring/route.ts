@@ -36,11 +36,13 @@ export async function POST(req: NextRequest) {
   const userIds = [...new Set(templates.map((t) => t.user_id))]
   const { data: settingsRows } = await supabase
     .from('user_settings')
-    .select('user_id, invoice_sequence')
+    .select('user_id, invoice_sequence, invoice_prefix')
     .in('user_id', userIds)
 
+  const userPrefixMap = new Map<string, string>()
   for (const s of settingsRows ?? []) {
     userSeqMap.set(s.user_id, s.invoice_sequence ?? 0)
+    userPrefixMap.set(s.user_id, s.invoice_prefix?.trim().toUpperCase() || 'INV')
   }
 
   let generated = 0
@@ -50,7 +52,8 @@ export async function POST(req: NextRequest) {
     try {
       const seq = (userSeqMap.get(template.user_id) ?? 0) + 1
       userSeqMap.set(template.user_id, seq)
-      const invoiceNumber = `INV-${String(seq).padStart(3, '0')}`
+      const prefix = userPrefixMap.get(template.user_id) ?? 'INV'
+      const invoiceNumber = `${prefix}-${String(seq).padStart(3, '0')}`
 
       const dueDate = new Date(today)
       dueDate.setDate(dueDate.getDate() + (template.due_days_after ?? 7))
