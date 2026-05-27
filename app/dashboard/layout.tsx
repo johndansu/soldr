@@ -53,6 +53,16 @@ const NAV_PRIMARY = [
     ),
   },
   {
+    href: '/dashboard/time',
+    label: 'Time',
+    icon: (
+      <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+        <circle cx="8" cy="8" r="6.5" />
+        <path d="M8 4.5V8l2.5 2.5" />
+      </svg>
+    ),
+  },
+  {
     href: '/dashboard/projects',
     label: 'Projects',
     icon: (

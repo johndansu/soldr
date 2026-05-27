@@ -34,7 +34,7 @@
 - [ ] Contract expiry warnings — alert before a contract end date passes
 
 ### Time & Projects
-- [ ] Time tracker — log hours against a client, auto-generate invoice from logged time
+- [x] Time tracker — log hours against a client, auto-generate invoice from logged time
 - [ ] Project board — milestones, status, linked to client and invoices
 
 ### AI Writing Tools
