@@ -107,6 +107,16 @@ const NAV_PRIMARY = [
     ),
   },
   {
+    href: '/dashboard/analytics',
+    label: 'Analytics',
+    icon: (
+      <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M1 12l4-4 3 3 4-5 3 2" />
+        <path d="M1 15h14" />
+      </svg>
+    ),
+  },
+  {
     href: '/dashboard/reports',
     label: 'Reports',
     icon: (

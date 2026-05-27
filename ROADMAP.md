@@ -44,9 +44,9 @@
 - [ ] Services / bio page generator — generate a shareable freelancer profile page
 
 ### Analytics
-- [ ] Client lifetime value — total billed per client, all time
-- [ ] Proposal conversion rate — sent vs accepted, by time period
-- [ ] Revenue forecast — based on recurring templates and open proposals
+- [x] Client lifetime value — total billed per client, all time
+- [x] Proposal conversion rate — sent vs accepted, by time period
+- [x] Revenue forecast — based on recurring templates and open proposals
 
 ### Settings & Branding
 - [x] Logo upload — appears on invoices and public-facing pages
