@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import { ClientNotes } from '@/components/clients/ClientNotes'
 import { PageContent } from '@/components/ui/PageContent'
+import { CopyButton } from '@/components/ui/CopyButton'
 
 const CURRENCY_SYMBOLS: Record<string, string> = {
   NGN: '₦', USD: '$', GBP: '£', EUR: '€', GHS: 'GH₵',
@@ -34,7 +35,7 @@ export default async function ClientDetailPage({ params }: { params: { id: strin
 
   const [{ data: client }, { data: notes }, { data: proposals }, { data: invoices }, { data: payments }] =
     await Promise.all([
-      supabase.from('clients').select('*').eq('id', params.id).eq('user_id', user!.id).single(),
+      supabase.from('clients').select('*, portal_token').eq('id', params.id).eq('user_id', user!.id).single(),
       supabase.from('client_notes').select('id, content, created_at').eq('client_id', params.id).eq('user_id', user!.id).order('created_at', { ascending: false }),
       supabase.from('proposals').select('id, title, brief_input, status, created_at').eq('client_id', params.id).eq('user_id', user!.id).order('created_at', { ascending: false }),
       supabase.from('invoices').select('id, invoice_number, amount, currency, status, due_date, created_at').eq('client_id', params.id).eq('user_id', user!.id).order('created_at', { ascending: false }),
@@ -67,6 +68,12 @@ export default async function ClientDetailPage({ params }: { params: { id: strin
           {client.phone   && <p className="text-sm text-gray-400">{client.phone}</p>}
         </div>
         <div className="flex items-center gap-2 mt-6">
+          {client.portal_token && (
+            <CopyButton
+              text={`${process.env.NEXT_PUBLIC_APP_URL ?? ''}/portal/${client.portal_token}`}
+              label="Share portal"
+            />
+          )}
           <Link href={`/dashboard/proposals/new?clientId=${client.id}`}
             className="rounded-xl border border-gray-200 px-4 py-2 text-sm font-medium text-gray-600 hover:bg-gray-50 transition-colors">
             New proposal

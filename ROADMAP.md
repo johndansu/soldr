@@ -26,7 +26,7 @@
 - [x] PDF export — one-click PDF download for invoices and contracts
 - [ ] Proposal templates — save a proposal as a reusable template
 - [ ] Contract templates — save a contract as a reusable template
-- [ ] Client portal — one `/portal/[token]` URL per client showing all their invoices, proposals, and contracts
+- [x] Client portal — one `/portal/[token]` URL per client showing all their invoices, proposals, and contracts
 
 ### Automation
 - [x] Overdue invoice reminders — auto-email clients on day 1, 7, 14 after due date (cron-based)
