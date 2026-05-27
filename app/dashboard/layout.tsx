@@ -86,6 +86,17 @@ const NAV_PRIMARY = [
     ),
   },
   {
+    href: '/dashboard/templates',
+    label: 'Templates',
+    icon: (
+      <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+        <rect x="2" y="1" width="9" height="11" rx="1" />
+        <path d="M5 4h3M5 7h3M5 10h1" />
+        <rect x="5" y="4" width="9" height="11" rx="1" fill="none" />
+      </svg>
+    ),
+  },
+  {
     href: '/dashboard/expenses',
     label: 'Expenses',
     icon: (

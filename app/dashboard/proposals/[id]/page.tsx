@@ -7,6 +7,7 @@ import { ProposalShareButton } from '@/components/proposal/ProposalShareButton'
 import { PageContent } from '@/components/ui/PageContent'
 import { DeleteButton } from '@/components/ui/DeleteButton'
 import { SendButton } from '@/components/ui/SendButton'
+import { SaveAsTemplateButton } from '@/components/ui/SaveAsTemplateButton'
 import { ProposalStatusButton } from '@/components/proposals/ProposalStatusButton'
 
 export default async function ProposalPage({ params }: { params: { id: string } }) {
@@ -43,6 +44,11 @@ export default async function ProposalPage({ params }: { params: { id: string } 
           </p>
         </div>
         <div className="flex items-center gap-3">
+          <SaveAsTemplateButton
+            endpoint="/api/proposal-templates"
+            title={proposal.title ?? 'Proposal'}
+            content={proposal.content}
+          />
           <ProposalStatusButton proposalId={proposal.id} initialStatus={proposal.status ?? 'draft'} />
           {client?.email && (
             <SendButton

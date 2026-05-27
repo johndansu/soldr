@@ -24,8 +24,8 @@
 
 ### Documents & Client-facing
 - [x] PDF export — one-click PDF download for invoices and contracts
-- [ ] Proposal templates — save a proposal as a reusable template
-- [ ] Contract templates — save a contract as a reusable template
+- [x] Proposal templates — save a proposal as a reusable template
+- [x] Contract templates — save a contract as a reusable template
 - [x] Client portal — one `/portal/[token]` URL per client showing all their invoices, proposals, and contracts
 
 ### Automation
