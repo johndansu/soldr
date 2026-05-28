@@ -132,6 +132,16 @@ const NAV_PRIMARY = [
 // Tools — AI utilities, surfaced contextually but accessible here for history
 const NAV_TOOLS = [
   {
+    href: '/dashboard/write',
+    label: 'Write',
+    icon: (
+      <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M11 2l3 3-8 8H3v-3l8-8z"/>
+        <path d="M9 4l3 3"/>
+      </svg>
+    ),
+  },
+  {
     href: '/dashboard/nudge',
     label: 'Nudge',
     icon: (

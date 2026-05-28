@@ -38,10 +38,10 @@
 - [ ] Project board — milestones, status, linked to client and invoices
 
 ### AI Writing Tools
-- [ ] Cold outreach email writer — AI-drafted first-contact emails for new leads
-- [ ] Project debrief / case study generator — turn a completed project into a portfolio write-up
-- [ ] Testimonial request generator — AI-crafted message asking clients for a review
-- [ ] Services / bio page generator — generate a shareable freelancer profile page
+- [x] Cold outreach email writer — AI-drafted first-contact emails for new leads
+- [x] Project debrief / case study generator — turn a completed project into a portfolio write-up
+- [x] Testimonial request generator — AI-crafted message asking clients for a review
+- [x] Services / bio page generator — generate a shareable freelancer profile page
 
 ### Analytics
 - [x] Client lifetime value — total billed per client, all time
